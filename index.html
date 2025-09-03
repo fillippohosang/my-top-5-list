@@ -1,6 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Add this inside <head> -->
+<style>
+  :root {
+    --bg-color: #f9f9f9;
+    --text-color: #111;
+  }
+
+  body.dark-mode {
+    --bg-color: #111;
+    --text-color: #f9f9f9;
+  }
+
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .toggle-btn {
+    margin: 20px;
+    padding: 10px 20px;
+    background: #0077cc;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .iframe-container iframe {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  .iframe-container iframe:nth-child(1) { animation-delay: 0.2s; }
+  .iframe-container iframe:nth-child(2) { animation-delay: 0.4s; }
+  .iframe-container iframe:nth-child(3) { animation-delay: 0.6s; }
+  .iframe-container iframe:nth-child(4) { animation-delay: 0.8s; }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Top 5 (Lately)</title>
@@ -58,6 +104,15 @@
   </style>
 </head>
 <body>
+  <!-- Add this inside <body> -->
+<button class="toggle-btn" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+
+<script>
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+  }
+</script>
+
 
   <h1>MY TOP 5 (lately)</h1>
   <p>Ordered by my playtime</p>
@@ -78,3 +133,4 @@
 
 </body>
 </html>
+
