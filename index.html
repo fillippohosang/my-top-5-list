@@ -269,7 +269,7 @@
       </div>
       <div class="track-mid">
         <div class="track-name" id="name-0">loading...</div>
-        <div class="track-artist" id="artist-0">—</div>
+        <div class="track-artist" id="artist-0">loading...</div>
       </div>
       <div class="track-right"><button class="play-btn" id="btn-0">▶</button></div>
       <div class="embed-wrapper" id="embed-0">
@@ -284,7 +284,7 @@
       </div>
       <div class="track-mid">
         <div class="track-name" id="name-1">loading...</div>
-        <div class="track-artist" id="artist-1">—</div>
+        <div class="track-artist" id="artist-1">loading...</div>
       </div>
       <div class="track-right"><button class="play-btn" id="btn-1">▶</button></div>
       <div class="embed-wrapper" id="embed-1">
@@ -299,7 +299,7 @@
       </div>
       <div class="track-mid">
         <div class="track-name" id="name-2">loading...</div>
-        <div class="track-artist" id="artist-2">—</div>
+        <div class="track-artist" id="artist-2">loading...</div>
       </div>
       <div class="track-right"><button class="play-btn" id="btn-2">▶</button></div>
       <div class="embed-wrapper" id="embed-2">
@@ -314,7 +314,7 @@
       </div>
       <div class="track-mid">
         <div class="track-name" id="name-3">loading...</div>
-        <div class="track-artist" id="artist-3">—</div>
+        <div class="track-artist" id="artist-3">loading...</div>
       </div>
       <div class="track-right"><button class="play-btn" id="btn-3">▶</button></div>
       <div class="embed-wrapper" id="embed-3">
@@ -329,7 +329,7 @@
       </div>
       <div class="track-mid">
         <div class="track-name" id="name-4">loading...</div>
-        <div class="track-artist" id="artist-4">—</div>
+        <div class="track-artist" id="artist-4">loading...</div>
       </div>
       <div class="track-right"><button class="play-btn" id="btn-4">▶</button></div>
       <div class="embed-wrapper" id="embed-4">
@@ -348,7 +348,7 @@
       </div>
       <div class="track-mid">
         <div class="track-name" id="name-5">loading...</div>
-        <div class="track-artist" id="artist-5">—</div>
+        <div class="track-artist" id="artist-5">loading...</div>
       </div>
       <div class="track-right"><button class="play-btn" id="btn-5">▶</button></div>
       <div class="embed-wrapper" id="embed-5">
@@ -363,7 +363,7 @@
       </div>
       <div class="track-mid">
         <div class="track-name" id="name-6">loading...</div>
-        <div class="track-artist" id="artist-6">—</div>
+        <div class="track-artist" id="artist-6">loading...</div>
       </div>
       <div class="track-right"><button class="play-btn" id="btn-6">▶</button></div>
       <div class="embed-wrapper" id="embed-6">
@@ -390,23 +390,59 @@
     "3SKH53SPQbEnZR4cJPVaz2",
   ];
 
-  async function fetchMeta(id, i) {
+  async function fetchSpotifyToken() {
     try {
+      const response = await fetch('https://open.spotify.com/get_access_token?reason=transport&productType=web-player');
+      const data = await response.json();
+      return data.accessToken;
+    } catch (e) {
+      console.error('Error fetching Spotify token:', e);
+      return null;
+    }
+  }
+
+  async function fetchMeta(id, i, token) {
+    try {
+      if (token) {
+        // Use Spotify Web API with token
+        const res = await fetch(`https://api.spotify.com/v1/tracks/${id}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const trackName = data.name || 'unknown';
+          const artists = data.artists?.map(a => a.name).join(', ') || 'unknown';
+          document.getElementById('name-' + i).textContent = trackName;
+          document.getElementById('artist-' + i).textContent = artists;
+          if (data.album?.images?.[0]?.url) {
+            document.getElementById('thumb-' + i).innerHTML = `<img src="${data.album.images[0].url}" alt="" />`;
+          }
+          return;
+        }
+      }
+      
+      // Fallback to oEmbed
       const res = await fetch(`https://open.spotify.com/oembed?url=https://open.spotify.com/track/${id}`);
       if (!res.ok) throw new Error();
       const d = await res.json();
       const parts = d.title ? d.title.split(' - ') : [];
       document.getElementById('name-' + i).textContent = parts[0] || d.title || 'unknown';
-      document.getElementById('artist-' + i).textContent = parts[1] || d.author_name || '—';
+      document.getElementById('artist-' + i).textContent = parts[1] || d.author_name || 'unknown';
       if (d.thumbnail_url) {
         document.getElementById('thumb-' + i).innerHTML = `<img src="${d.thumbnail_url}" alt="" />`;
       }
     } catch(e) {
       document.getElementById('name-' + i).textContent = 'track ' + (i + 1);
+      document.getElementById('artist-' + i).textContent = 'unknown';
     }
   }
 
-  ids.forEach((id, i) => fetchMeta(id, i));
+  async function init() {
+    const token = await fetchSpotifyToken();
+    ids.forEach((id, i) => fetchMeta(id, i, token));
+  }
+
+  init();
 
   let open = null;
   function toggleEmbed(i) {
