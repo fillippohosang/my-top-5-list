@@ -3,87 +3,411 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Top 5 (Lately)</title>
-  <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+  <title>My Top 5 (Lately) — Pipo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --oxford: #0A174E;
+      --oxford-mid: #111d5e;
+      --maize: #F5D042;
+      --off-white: #EDE9DF;
+      --muted: rgba(237,233,223,0.45);
+      --border: rgba(237,233,223,0.1);
+    }
+
     body {
-      font-family: 'Roboto', sans-serif;
-      font-weight: bold;
-      margin: 0;
-      padding: 20px;
-      background-color: #f9f9f9;
-      text-align: center;
+      background: #07102e;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 3rem 1rem 5rem;
     }
 
-    h1 {
-      font-size: 2em;
-      margin-bottom: 10px;
+    .wrap {
+      font-family: 'Inconsolata', monospace;
+      background: var(--oxford);
+      border-radius: 16px;
+      overflow: hidden;
+      width: 100%;
+      max-width: 600px;
     }
 
-    p {
-      font-size: 1em;
-      margin-bottom: 20px;
+    .hero {
+      padding: 2.5rem 2rem 1.75rem;
+      position: relative;
+      overflow: hidden;
     }
 
-    .iframe-container {
+    .hero-bg-num {
+      position: absolute;
+      right: -0.05em;
+      top: -0.15em;
+      font-size: 13rem;
+      font-weight: 600;
+      color: rgba(245, 208, 66, 0.055);
+      line-height: 1;
+      pointer-events: none;
+      letter-spacing: -0.04em;
+      user-select: none;
+    }
+
+    .eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      color: var(--maize);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-title {
+      font-size: 2.6rem;
+      font-weight: 300;
+      color: var(--off-white);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.2rem;
+    }
+    .hero-title span {
+      color: var(--maize);
+      font-weight: 600;
+    }
+
+    .hero-sub {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    .maize-rule {
+      height: 2px;
+      background: var(--maize);
+      width: 2.5rem;
+      margin: 1.5rem 0 0;
+      border-radius: 2px;
+    }
+
+    .list-wrap {
+      padding: 0 2rem 2rem;
+    }
+
+    .track {
+      display: grid;
+      grid-template-columns: 2.8rem 1fr auto;
+      align-items: center;
+      gap: 0 1rem;
+      border-bottom: 0.5px solid var(--border);
+      cursor: pointer;
+      transition: background 0.12s;
+      border-radius: 6px;
+      margin: 0 -0.6rem;
+      padding: 0 0.6rem;
+    }
+    .track:first-child { border-top: 0.5px solid var(--border); }
+    .track:hover { background: rgba(245,208,66,0.05); }
+
+    .track-left {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 20px;
-      margin-bottom: 30px;
+      justify-content: center;
+      padding: 1rem 0;
+      gap: 6px;
     }
 
-    iframe {
-      width: 90%;
-      max-width: 600px;
-      height: 152px;
-      border-radius: 12px;
-      border: none;
+    .big-num {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--maize);
+      line-height: 1;
+      letter-spacing: -0.03em;
     }
 
-    .tenor-gif-embed {
-      margin: 0 auto;
-      max-width: 400px;
+    .track-thumb-sm {
+      width: 28px;
+      height: 28px;
+      border-radius: 3px;
+      overflow: hidden;
+      background: var(--oxford-mid);
+      border: 0.5px solid var(--border);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .track-thumb-sm img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .track-mid {
+      padding: 1rem 0;
+      min-width: 0;
+    }
+    .track-name {
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--off-white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin: 0 0 2px;
+    }
+    .track-artist {
+      font-size: 0.73rem;
+      color: var(--muted);
+      font-weight: 300;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 1.5em;
-      }
+    .track-right {
+      display: flex;
+      align-items: center;
+    }
 
-      iframe {
-        width: 100%;
-      }
+    .play-btn {
+      width: 28px; height: 28px;
+      border-radius: 3px;
+      border: 0.5px solid rgba(245,208,66,0.2);
+      background: transparent;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: rgba(245,208,66,0.4);
+      font-size: 9px;
+      transition: all 0.12s;
+      font-family: 'Inconsolata', monospace;
+      padding: 0;
+    }
+    .play-btn:hover, .play-btn.playing {
+      background: var(--maize);
+      border-color: var(--maize);
+      color: var(--oxford);
+    }
+
+    .embed-wrapper {
+      display: none;
+      grid-column: 1 / -1;
+      padding: 0 0 0.75rem 3.8rem;
+    }
+    .embed-wrapper.visible { display: block; }
+    .embed-wrapper iframe {
+      width: 100%; height: 80px;
+      border: none; display: block; border-radius: 8px;
+    }
+
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 2rem 0.75rem;
+    }
+    .section-divider span {
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      white-space: nowrap;
+      font-family: 'Inconsolata', monospace;
+    }
+    .section-divider::after {
+      content: '';
+      flex: 1;
+      height: 0.5px;
+      background: var(--border);
+    }
+
+    .footer {
+      padding: 0.5rem 2rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+    }
+    .footer-note {
+      font-size: 0.7rem;
+      color: rgba(245,208,66,0.2);
+      letter-spacing: 0.1em;
+      font-family: 'Inconsolata', monospace;
+    }
+    .footer-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--maize);
+      opacity: 0.25;
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 1.5rem 0.75rem 4rem; }
+      .hero { padding: 2rem 1.5rem 1.5rem; }
+      .hero-title { font-size: 2rem; }
+      .hero-bg-num { font-size: 9rem; }
+      .list-wrap { padding: 0 1.5rem 1.5rem; }
+      .section-divider { padding: 0 1.5rem 0.75rem; }
+      .footer { padding: 0.5rem 1.5rem 1.5rem; }
     }
   </style>
 </head>
 <body>
 
-  <h1>MY TOP 5 (lately)</h1>
-  <p>Ordered by my playtime</p>
+<div class="wrap">
 
-  <div class="iframe-container">
-    <iframe src="https://open.spotify.com/embed/track/4oy8ASvud3H7E3JuMMGZ0F?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    <iframe src="https://open.spotify.com/embed/track/2nopDUxom21JoMzFXj9wS0?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    <iframe src="https://open.spotify.com/embed/track/1rKQjUhF9zFJmuUotr3VkV?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    <iframe src="https://open.spotify.com/embed/track/5PclMa9Pxs1OFWSAS6Nid9?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+  <div class="hero">
+    <div class="hero-bg-num">5</div>
+    <div class="eyebrow">pipo's picks</div>
+    <div class="hero-title">my top <span>five</span><br>lately.</div>
+    <div class="hero-sub">ordered by playtime</div>
+    <div class="maize-rule"></div>
   </div>
 
-  <h1>New Candidates</h1>
-  <p>okay, i see you<p>
-    <div class="iframe-container">
-    <iframe src="https://open.spotify.com/embed/track/3L9KMc8ImDXgDYKwdqq01V?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    <iframe src="https://open.spotify.com/embed/track/37UCSVSqiPGdR1DijOFyYY?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+  <div class="list-wrap">
+    <div class="track" onclick="toggleEmbed(0)">
+      <div class="track-left">
+        <div class="big-num">01</div>
+        <div class="track-thumb-sm" id="thumb-0">♪</div>
+      </div>
+      <div class="track-mid">
+        <div class="track-name" id="name-0">loading...</div>
+        <div class="track-artist" id="artist-0">—</div>
+      </div>
+      <div class="track-right"><button class="play-btn" id="btn-0">▶</button></div>
+      <div class="embed-wrapper" id="embed-0">
+        <iframe src="https://open.spotify.com/embed/track/4oy8ASvud3H7E3JuMMGZ0F?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </div>
     </div>
-  <div class="tenor-gif-embed" data-postid="7569054144688646875" data-share-aspect="true" data-width="100%" data-alt="Olivia Wilde Nodding GIF" data-media-id="7569054144688646875" data-show-via-tenor="true" data-expand="true">
-    <a href="https://tenor.com/view/olivia-wilde-nodding-gif-7569054144688646875">Olivia Wilde Nodding GIF</a> from <a href="https://tenor.com/search/olivia+wilde-gifs">Olivia Wilde GIFs</a>
-  </div>
-  <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
 
-  <p>tuvalu.</p>
+    <div class="track" onclick="toggleEmbed(1)">
+      <div class="track-left">
+        <div class="big-num">02</div>
+        <div class="track-thumb-sm" id="thumb-1">♪</div>
+      </div>
+      <div class="track-mid">
+        <div class="track-name" id="name-1">loading...</div>
+        <div class="track-artist" id="artist-1">—</div>
+      </div>
+      <div class="track-right"><button class="play-btn" id="btn-1">▶</button></div>
+      <div class="embed-wrapper" id="embed-1">
+        <iframe src="https://open.spotify.com/embed/track/2nopDUxom21JoMzFXj9wS0?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </div>
+    </div>
+
+    <div class="track" onclick="toggleEmbed(2)">
+      <div class="track-left">
+        <div class="big-num">03</div>
+        <div class="track-thumb-sm" id="thumb-2">♪</div>
+      </div>
+      <div class="track-mid">
+        <div class="track-name" id="name-2">loading...</div>
+        <div class="track-artist" id="artist-2">—</div>
+      </div>
+      <div class="track-right"><button class="play-btn" id="btn-2">▶</button></div>
+      <div class="embed-wrapper" id="embed-2">
+        <iframe src="https://open.spotify.com/embed/track/1rKQjUhF9zFJmuUotr3VkV?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </div>
+    </div>
+
+    <div class="track" onclick="toggleEmbed(3)">
+      <div class="track-left">
+        <div class="big-num">04</div>
+        <div class="track-thumb-sm" id="thumb-3">♪</div>
+      </div>
+      <div class="track-mid">
+        <div class="track-name" id="name-3">loading...</div>
+        <div class="track-artist" id="artist-3">—</div>
+      </div>
+      <div class="track-right"><button class="play-btn" id="btn-3">▶</button></div>
+      <div class="embed-wrapper" id="embed-3">
+        <iframe src="https://open.spotify.com/embed/track/5PclMa9Pxs1OFWSAS6Nid9?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"><span>new candidates — okay, i see you</span></div>
+
+  <div class="list-wrap" style="padding-top:0">
+    <div class="track" onclick="toggleEmbed(4)">
+      <div class="track-left">
+        <div class="big-num" style="color:rgba(245,208,66,0.3)">—</div>
+        <div class="track-thumb-sm" id="thumb-4">♪</div>
+      </div>
+      <div class="track-mid">
+        <div class="track-name" id="name-4">loading...</div>
+        <div class="track-artist" id="artist-4">—</div>
+      </div>
+      <div class="track-right"><button class="play-btn" id="btn-4">▶</button></div>
+      <div class="embed-wrapper" id="embed-4">
+        <iframe src="https://open.spotify.com/embed/track/3L9KMc8ImDXgDYKwdqq01V?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </div>
+    </div>
+
+    <div class="track" onclick="toggleEmbed(5)">
+      <div class="track-left">
+        <div class="big-num" style="color:rgba(245,208,66,0.3)">—</div>
+        <div class="track-thumb-sm" id="thumb-5">♪</div>
+      </div>
+      <div class="track-mid">
+        <div class="track-name" id="name-5">loading...</div>
+        <div class="track-artist" id="artist-5">—</div>
+      </div>
+      <div class="track-right"><button class="play-btn" id="btn-5">▶</button></div>
+      <div class="embed-wrapper" id="embed-5">
+        <iframe src="https://open.spotify.com/embed/track/37UCSVSqiPGdR1DijOFyYY?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="footer-note">tuvalu.</span>
+    <div class="footer-dot"></div>
+  </div>
+
+</div>
+
+<script>
+  const ids = [
+    "4oy8ASvud3H7E3JuMMGZ0F",
+    "2nopDUxom21JoMzFXj9wS0",
+    "1rKQjUhF9zFJmuUotr3VkV",
+    "5PclMa9Pxs1OFWSAS6Nid9",
+    "3L9KMc8ImDXgDYKwdqq01V",
+    "37UCSVSqiPGdR1DijOFyYY",
+  ];
+
+  async function fetchMeta(id, i) {
+    try {
+      const res = await fetch(`https://open.spotify.com/oembed?url=https://open.spotify.com/track/${id}`);
+      if (!res.ok) throw new Error();
+      const d = await res.json();
+      const parts = d.title ? d.title.split(' - ') : [];
+      document.getElementById('name-' + i).textContent = parts[0] || d.title || 'unknown';
+      document.getElementById('artist-' + i).textContent = parts[1] || d.author_name || '—';
+      if (d.thumbnail_url) {
+        document.getElementById('thumb-' + i).innerHTML = `<img src="${d.thumbnail_url}" alt="" />`;
+      }
+    } catch(e) {
+      document.getElementById('name-' + i).textContent = 'track ' + (i + 1);
+    }
+  }
+
+  ids.forEach((id, i) => fetchMeta(id, i));
+
+  let open = null;
+  function toggleEmbed(i) {
+    const e = document.getElementById('embed-' + i);
+    const b = document.getElementById('btn-' + i);
+    if (open !== null && open !== i) {
+      document.getElementById('embed-' + open).classList.remove('visible');
+      document.getElementById('btn-' + open).classList.remove('playing');
+      document.getElementById('btn-' + open).textContent = '▶';
+    }
+    const was = e.classList.contains('visible');
+    e.classList.toggle('visible', !was);
+    b.classList.toggle('playing', !was);
+    b.textContent = !was ? '■' : '▶';
+    open = !was ? i : null;
+  }
+</script>
 
 </body>
 </html>
-
-
-
